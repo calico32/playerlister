@@ -14,14 +14,11 @@ class PlayerLister : JavaPlugin() {
         routing {
             get("/") { call.respond(HttpStatusCode.OK) }
             get("/players") {
-                val players = mutableListOf<String>()
-
-                for (world in server.worlds) {
-                    players.addAll(*world.players.map { it.name })
-                }
+                val players = server.onlinePlayers.toTypedArray()
+                val playerNames = players.map { it.name }
 
                 val playerList =
-                    if (players.size == 0) "" else "\"${players.joinToString("\",\"")}\""
+                    if (players.isEmpty()) "" else "\"${playerNames.joinToString("\",\"")}\""
 
                 call.respondText(
                     "{\"players\":[$playerList]}", ContentType.Application.Json
